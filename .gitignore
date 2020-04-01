@@ -1,0 +1,17 @@
+# Project dependencies
+/node_modules
+
+# Environment config
+.env
+
+# Compiled output
+/dist
+/build-migrations
+/frontend
+
+# Media uploaded
+/media
+**/uploads/
+
+# Others
+.DS_Store

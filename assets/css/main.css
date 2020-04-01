@@ -1,0 +1,16 @@
+.full-container{
+    min-height: 100%;
+}
+html{
+    height: 100%;
+}
+.no-drag{
+    -webkit-app-region: no-drag;
+}
+body{
+    -webkit-app-region: drag
+}
+.console{
+    max-height: 180px;
+    overflow: auto;
+}

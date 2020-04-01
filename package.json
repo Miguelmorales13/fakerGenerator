@@ -1,0 +1,29 @@
+{
+  "name": "fakergenerator",
+  "version": "1.0.1",
+  "description": "Faker Generator",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "keywords": [],
+  "author": "Miguel angel morales",
+  "license": "ISC",
+  "build": {
+    "win": {
+      "target": "NSIS",
+      "icon": "build/icon.ico"
+    }
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "express": "^4.17.1",
+    "faker": "^4.1.0"
+  },
+  "devDependencies": {
+    "electron": "^7.0.0",
+    "electron-builder": "^22.1.0"
+  }
+}
