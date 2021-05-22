@@ -1,74 +1,84 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-        <link rel="stylesheet" href="./assets/css/bootstrap.min.css" />
-        <link rel="stylesheet" href="./assets/css/font-awesome.min.css" />
-        <link rel="stylesheet" href="./assets/css/toastr.min.css" />
-        <link rel="stylesheet" href="./assets/css/main.css" />
-        <title>Faker Generator</title>
-    </head>
-    <body class="bg-primary h-100" style="-webkit-app-region: drag">
-        <div id="app" class="h-100">
-            <div class="container-fluid py-2">
-                <div class="row">
-                    <div class="col-8 text-white d-flex justify-content-start align-items-start">
-                        <input type="number" placeholder="quantity" v-model="quantity" class="form-control form-control-sm no-drag" />
-                        <select class="form-control form-control-sm no-drag" v-model="typeOutput">
-                            <option v-for="(op,i) in typesOutput" :value="op" :key="`type${i}`">{{op}}</option>
-                        </select>
-                        <input v-if="typeOutput=='sql'" type="text" placeholder="table name" v-model="tableName" class="form-control no-drag form-control-sm" />
-                    </div>
-                    <div class="col-4 d-flex justify-content-end align-items-start text-white text-center ">
-                        <button class="btn  btn-sm btn-secondary no-drag " type="button" @click="createData()">
-                            Generate
-                        </button>
-                        <button class="btn btn-white btn-sm btn-success no-drag text-white" type="button" @click="addField()">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                        </button>
-                        <button class="btn btn-white btn-danger btn-sm no-drag text-white" type="button" @click="close()">
-                            <i class="fa fa-times" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                    <div class="col-12 text-center text-white">
-                        <br />
-                        <h4>Generator random</h4>
-                        <br />
-                    </div>
-                </div>
-                <div class="row mb-2" v-for="(field, a) in fields" :key="a">
-                    <div class="col-4">
-                        <input type="text" v-model="field.name" class="no-drag form-control form-control-sm" />
-                    </div>
-                    <div class="col-4">
-                        <select class="form-control form-control-sm no-drag" v-model="field.optOne">
-                            <option v-for="(op,i) in options" :value="op" :key="`${i}${a}`">{{op.name}}</option>
-                        </select>
-                    </div>
-                    <div class="col-3">
-                        <select class="form-control form-control-sm no-drag" v-model="field.optTwo">
-                            <option v-for="(opt,j) in field.optOne.options" :value="opt" :key="`a${a}${j}`">{{opt}}</option>
-                        </select>
-                    </div>
-                    <div class="col-1">
-                        <button class=" btn btn-sm  btn-danger no-drag" type="button" @click="deleteIndex(a)">
-                            <i class="fa fa-minus" aria-hidden="true"></i>
-                        </button>
-                    </div>
-                </div>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <link rel="stylesheet" href="./assets/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="./assets/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="./assets/css/toastr.min.css"/>
+    <link rel="stylesheet" href="./assets/css/main.css"/>
+    <title>Faker Generator</title>
+</head>
+<body class="bg-primary h-100" style="-webkit-app-region: drag">
+<div id="app" class="h-100">
+    <div class="container-fluid py-2">
+        <div class="row">
+            <div class="col-8 text-white d-flex justify-content-start align-items-start">
+                <input data-toggle="tooltip" data-placement="top" title="Registers Quantity" type="number"
+                       placeholder="quantity" v-model="quantity" class="form-control form-control-sm no-drag"/>
+                <select data-toggle="tooltip" data-placement="top" title="Type registers"
+                        class="form-control form-control-sm no-drag" v-model="typeOutput">
+                    <option v-for="(op,i) in typesOutput" :value="op" :key="`type${i}`">{{op}}</option>
+                </select>
+                <input data-toggle="tooltip" data-placement="top" title="Table name !no spaces" v-if="typeOutput=='sql'"
+                       type="text" placeholder="table name" v-model="tableName"
+                       class="form-control no-drag form-control-sm"/>
+            </div>
+
+            <div class="col-4 d-flex justify-content-end align-items-start text-white text-center ">
+                <button class="btn  btn-sm btn-secondary no-drag " type="button" :disabled="!fileOutput"
+                        @click="createData()">
+                    Generate
+                </button>
+                <button class="btn btn-white btn-sm btn-success no-drag text-white" type="button" @click="addField()">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-white btn-danger btn-sm no-drag text-white" type="button" @click="close()">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="col-12">
+                <input data-toggle="tooltip" data-placement="top" title="File Output location" type="text"
+                       placeholder="fileOutput" v-model="fileOutput" class="form-control form-control-sm no-drag"/>
+            </div>
+            <div class="col-12 text-center text-white">
+                <br/>
+                <h4>Generator random</h4>
+                <br/>
             </div>
         </div>
-        <script src="./assets/js/vue.min.js"></script>
-        <script src="./assets/js/popper.min.js"></script>
-        <script src="./assets/js/papaparse.min.js"></script>
-        <script>
-            window.$ = window.jQuery = require("./assets/js/jquery-3.4.1.min.js");
-        </script>
-        <!-- <script src="./assets/js/jquery-3.4.1.min.js"></script> -->
-        <!-- <script src="./assets/js/toastr.min.js"></script> -->
-        <script src="./assets/js/bootstrap.min.js"></script>
-        <script src="./assets/js/vue/main.js"></script>
-    </body>
+        <div class="row mb-2" v-for="(field, a) in fields" :key="a">
+            <div class="col-4">
+                <input type="text" v-model="field.name" class="no-drag form-control form-control-sm"/>
+            </div>
+            <div class="col-4">
+                <select class="form-control form-control-sm no-drag" v-model="field.optOne">
+                    <option v-for="(op,i) in options" :value="op" :key="`${i}${a}`">{{op.name}}</option>
+                </select>
+            </div>
+            <div class="col-3">
+                <select class="form-control form-control-sm no-drag" v-model="field.optTwo">
+                    <option v-for="(opt,j) in field.optOne.options" :value="opt" :key="`a${a}${j}`">{{opt}}</option>
+                </select>
+            </div>
+            <div class="col-1">
+                <button class=" btn btn-sm  btn-danger no-drag" type="button" @click="deleteIndex(a)">
+                    <i class="fa fa-minus" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="./assets/js/vue.min.js"></script>
+<script src="./assets/js/popper.min.js"></script>
+<script src="./assets/js/papaparse.min.js"></script>
+<script>
+    window.$ = window.jQuery = require("./assets/js/jquery-3.4.1.min.js");
+</script>
+<!-- <script src="./assets/js/jquery-3.4.1.min.js"></script> -->
+<!-- <script src="./assets/js/toastr.min.js"></script> -->
+<script src="./assets/js/bootstrap.min.js"></script>
+<script src="./assets/js/vue/main.js"></script>
+</body>
 </html>

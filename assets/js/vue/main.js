@@ -1,6 +1,6 @@
 const fs = require("fs");
 const faker = require("faker");
-
+const path = require('path')
 new Vue({
     el: "#app",
     data: {
@@ -59,10 +59,14 @@ new Vue({
         ],
         quantity: 100,
         typeOutput: "sql",
+        fileOutput: __dirname,
         tableName: "public"
     },
-    created() {},
-    mounted() {},
+    created() {
+    },
+    mounted() {
+        $('input').tooltip();
+    },
     methods: {
         close() {
             window.close();
@@ -114,8 +118,8 @@ new Vue({
         downloadData(data) {
             // let blob = new Blob([data], { type: "octet/stream" });
             // saveAs(blob, `data.${this.typeOutput}`);
-            fs.writeFile(`data.${this.typeOutput}`, data, () => {
-                console.log(saved);
+            fs.writeFile(path.join(this.fileOutput, `data.${this.typeOutput}`), data, err => {
+                console.log(err)
             });
             // let url = window.URL.createObjectURL(blob);
             // var a = document.createElement("a");
@@ -125,7 +129,7 @@ new Vue({
             // window.URL.revokeObjectURL(url);
         },
         formatCSV(data) {
-            let doc = Papa.unparse(data, { download: true });
+            let doc = Papa.unparse(data, {download: true});
             this.downloadData(doc);
         },
         formatSQL(data, headers) {
@@ -134,7 +138,8 @@ new Vue({
                 let headersFormat = headers.reduce((b, a) => {
                     return (b += ` '${after[a].replace(/'/g, "")}\',`);
                 }, "");
-                return (before += `INSERT INTO ${this.tableName}(${values}) VALUES(${headersFormat.slice(1, -1)});\n`);
+                return (before += `INSERT INTO ${this.tableName}(${values})
+                                   VALUES (${headersFormat.slice(1, -1)});  `);
             }, "");
             this.downloadData(inserts);
         }

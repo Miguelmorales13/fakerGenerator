@@ -3,7 +3,10 @@
 
 # Environment config
 .env
-
+*.csv
+*.tgz
+data.json
+data.sql
 # Compiled output
 /dist
 /build-migrations
